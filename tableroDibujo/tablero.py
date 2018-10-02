@@ -25,9 +25,13 @@ class Tablero(wx.Frame):
         self.crear_objeto()
         self.crear_conexion(self.boton1,self.boton2)
         #--------------------------------------------------------------
+        
+        #self.dibujar(None)
         self.panel.Bind(wx.EVT_ERASE_BACKGROUND, self.dibujar)
+        #self.panel.Bind(wx.EVT_PAINT, self.dibujar)
         self.panel.Bind(wx.EVT_SIZE, self.dibujar)
         self.Show()
+        
        
     def crear_fondo(self):
         self.fondo = FondoModulo.Cuadricula(self.panel)
@@ -43,12 +47,16 @@ class Tablero(wx.Frame):
         conexion = unionesModulo.Conexion('Libre', objeto1, objeto2)
         self.uniones.crear_union(conexion)        
     
+    def __nada(self):
+        pass
+    
     def dibujar(self, e):
         dc = wx.ClientDC(self.panel)
         dc.Clear()
         self.fondo.dibujar(dc)
         #self.dibujar_uniones(dc)
         self.uniones.actualizar_uniones(dc)
+       
     
         
         

@@ -66,7 +66,7 @@ class Conexion(Union):
         
         puerto1, puerto2, diferencia = self.seleccionar_puertos(objeto1, objeto2)   
         boton1_pos = self.objeto1.get_coordenadas_puerto(puerto1)
-        print self.objeto1
+        #print self.objeto1
         boton2_pos = self.objeto2.get_coordenadas_puerto(puerto2)
         curva1 = (boton1_pos[0], boton1_pos[1] + diferencia)
         curva2 = (boton2_pos[0], curva1[1])
