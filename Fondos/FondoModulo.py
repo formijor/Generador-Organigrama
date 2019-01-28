@@ -5,8 +5,9 @@ Created on 30 sep. 2018
 '''
 
 import wx
-#import tablero
 
+
+#import tablero
 class Fondo():
     def __init__(self, parent):
         self.parent = parent
@@ -15,16 +16,13 @@ class Fondo():
 class Cuadricula(Fondo):
     def __init__(self, parent):
         Fondo.__init__(self, parent)
-        #self.dibujar(dc)
-    #def preparar_cuadricular(self):
-                  
     
     def dibujar(self, dc):
         dc.SetPen(wx.Pen("Black", 1))
-        separacion = 20
-        x1 = 0 + separacion
+        separacion = 50
+        x1 = 160 + separacion
         y1 = 0 + separacion
-        x2 = 0 + separacion
+        x2 = 160 + separacion
         y2 = 0 + separacion
         ancho, alto = (self.parent.GetSize())
         cantidad_lineas_ancho = ancho / separacion
@@ -43,8 +41,7 @@ class Cuadricula(Fondo):
         imagenLinea(dc, self.parent, inicio_alto, ancho_alto, fin_alto, fin_ancho)
 
 "---------------------------------------------------------------------------------"
-
-    
+  
 class imagenLinea(object):
     def __init__(self, dc, panel, inicio_alto, ancho_alto, fin_alto, fin_ancho):
         #self.panel = panel

@@ -23,7 +23,7 @@ class Uniones():
             
         
 class Union():
-    def __init__(self, objeto1, objeto2, tipo):
+    def __init__(self, parent, objeto1, objeto2, tipo):
         #self.id_conexion = id_union
         self.objeto1 = objeto1
         self.objeto2 = objeto2
@@ -46,40 +46,38 @@ class Union():
     def get_size_objetos(self):
         return [self.objeto1.GetSize(), self.objeto2.GetSize()]
 
+
 class Conexion(Union):
-    def __init__(self, tipo, objeto1, objeto2):
-        Union.__init__(self, objeto1, objeto2, tipo)
-    
+    def __init__(self, parent, tipo, objeto1, objeto2):
+        Union.__init__(self, parent, objeto1, objeto2, tipo)
+        self.parent = parent
+        
     def dibujar(self, dc):
         dc.SetPen(wx.Pen("GREEN", 3))        
         for punto in self.lista_puntos:     
             dc.DrawLine(punto[0], punto[1])
           
     def crear_conexion(self):
-        """for objeto in self.lista_botones:
-            objeto.set_puertos()"""
-        """pos1 = self.lista_botones[0].get_position()       
-        pos2 = self.lista_botones[1].get_position()
-        size1 = self.lista_botones[0].get_size()
-        size2 = self.lista_botones[1].get_size()"""
         objeto1, objeto2 = self.get_objetos()
-        
-        puerto1, puerto2, diferencia = self.seleccionar_puertos(objeto1, objeto2)   
-        boton1_pos = self.objeto1.get_coordenadas_puerto(puerto1)
-        #print self.objeto1
-        boton2_pos = self.objeto2.get_coordenadas_puerto(puerto2)
+        puerto1, puerto2, diferencia = self.seleccionar_puertos(objeto1, objeto2)
+        boton1_pos, boton2_pos = self.coordenadas_puertos(puerto1, puerto2)
+        #boton1_pos = self.objeto1.get_coordenadas_puerto(puerto1)
+        #boton2_pos = self.objeto2.get_coordenadas_puerto(puerto2)
+               
         curva1 = (boton1_pos[0], boton1_pos[1] + diferencia)
         curva2 = (boton2_pos[0], curva1[1])
-        self.lista_puntos = [boton1_pos, curva1], [curva1, curva2], [curva2, boton2_pos]    
+        self.lista_puntos = [boton1_pos, curva1], [curva1, curva2], [curva2, boton2_pos] 
+    
+    def coordenadas_puertos(self, puerto1, puerto2):
+        boton1_pos = self.objeto1.get_coordenadas_puerto(puerto1)
+        boton2_pos = self.objeto2.get_coordenadas_puerto(puerto2)
+        return boton1_pos, boton2_pos
+        
         
     def seleccionar_puertos(self, objeto1, objeto2):
         x1, y1 = self.objeto1.GetPosition()
         x2, y2 = self.objeto2.GetPosition()
         size1, size2 = self.get_size_objetos()       
-        """x1 = pos1[0]
-        y1 = pos1[1]
-        x2 = pos2[0]
-        y2 = pos2[1]"""
         rango_especial = size1[1] * 2
         rango_especial2 = size1[0] * 2    
         pos_x = (x1 - x2) * -1
@@ -125,4 +123,3 @@ class Conexion(Union):
                 puerto2 = 'derecha'
             
         return puerto1, puerto2, diferencia
-       
