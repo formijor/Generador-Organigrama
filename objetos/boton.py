@@ -3,6 +3,7 @@ Created on 29 sep. 2018
 
 @author: Jorge
 '''
+import ctypes
 import wx
 import objetoModulo
 
@@ -18,7 +19,8 @@ class Boton(wx.Button, objetoModulo.Objeto):
         self.Bind(wx.EVT_LEFT_DOWN, self.button_down)
         self.Bind(wx.EVT_LEFT_UP, self.button_up)
         #self.Bind(wx.EVT_ENTER_WINDOW, self.set_focus)
-        self.Bind(wx.EVT_MOTION, self.mover)
+        self.Bind(wx.EVT_MOUSE_EVENTS, self.mover)
+        self.parent.Bind(wx.EVT_MOUSE_EVENTS, self.mover)
         self.Bind(wx.EVT_ERASE_BACKGROUND, self.onEraseBackground)
         self.Bind(wx.EVT_PAINT, self.OnPaint)
     
@@ -66,19 +68,22 @@ class Boton(wx.Button, objetoModulo.Objeto):
         
     def mover(self, e):
         e.Skip()
-        #print (self.parent.ScreenToClient(wx.GetMousePosition()), e.GetPosition())  
-        
-        if e.Dragging() and self.entro:
+        print ('ENTROEX')  
+        if self.entro:
+            
             #print ('lalala', e.GetPosition()) 
             self.Raise()
-            pos = e.GetPosition()
+            pos = self.GetPosition() 
             coordenadas = self.offset_coordenates(self.parent.ScreenToClient(wx.GetMousePosition()),self.calculate_coordenates())
             #self.orientacion_movimiento(0, 0)
             #pos_anterior = e.GetPosition()
             #self.SetPosition(self.parent.ScreenToClient(wx.GetMousePosition()))
             tup = (coordenadas[0] - 60 , coordenadas[1] - 20)
             print ('antes final', tup)
-            #print('final', (coordenadas + self.parent.ScreenToClient(wx.GetMousePosition())))
+            diferencia =  ((tup[0] - pos[0]) / 5, (tup[1] - pos[1]) / 5)
+            print ('diferencia', diferencia )
+            tup = (tup[0] - diferencia[0], tup[1] - diferencia[1])
+            print('AAA', tup)
             self.SetPosition(tup)
     
     def calculate_coordenates(self):
@@ -93,19 +98,15 @@ class Boton(wx.Button, objetoModulo.Objeto):
         #print ('coor2', coordenadas2)
         return coordenadas[0] , coordenadas[1]
             
-    def button_down(self, event):        
+    def button_down(self, event):   
         self.entro = True
         self.mouse_pos = event.GetPosition()
         #print (self.mouse_pos)
         self.Refresh()
         
-    def button_up(self, event):  
+    def button_up(self, event): 
         self.entro = False
         self.Refresh()
-    
-    def set_focus(self, event):
-        self.mouse_pos = event.GetPosition()
-        print (self.mouse_pos)
            
     def orientacion_movimiento(self, pos_anterior, pos_posterior): 
         mouse = wx.GetMouseState()
