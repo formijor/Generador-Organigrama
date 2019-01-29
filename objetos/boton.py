@@ -3,7 +3,7 @@ Created on 29 sep. 2018
 
 @author: Jorge
 '''
-import ctypes
+
 import wx
 import objetoModulo
 
