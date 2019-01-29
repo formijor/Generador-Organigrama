@@ -13,11 +13,12 @@ class Boton(wx.Button, objetoModulo.Objeto):
         wx.Button.__init__(self, parent= self.parent, id = -1, label= nombre, pos=(posX, posY), size= (120, 40))
         objetoModulo.Objeto.__init__(self, id_objeto, nombre)
         self.entro = False
-        self.r = False
+        self.size = (120, 40)
         self.__crear_puertos()
         self.Bind(wx.EVT_LEFT_DOWN, self.button_down)
         self.Bind(wx.EVT_LEFT_UP, self.button_up)
-        self.parent.Bind(wx.EVT_MOUSE_EVENTS, self.mover)
+        #self.Bind(wx.EVT_ENTER_WINDOW, self.set_focus)
+        self.Bind(wx.EVT_MOTION, self.mover)
         self.Bind(wx.EVT_ERASE_BACKGROUND, self.onEraseBackground)
         self.Bind(wx.EVT_PAINT, self.OnPaint)
     
@@ -29,6 +30,12 @@ class Boton(wx.Button, objetoModulo.Objeto):
     
     def __parientes(self):
         pass
+    
+    def get_size(self):
+        return self.size
+    
+    def get_size_center(self):
+        return (self.size[0] / 2, self.size[1] / 2)
     
     def __crear_puertos(self):
         size = self.GetSize()
@@ -58,19 +65,51 @@ class Boton(wx.Button, objetoModulo.Objeto):
         wx.Button.Bind(self, *args, **kwargs)
         
     def mover(self, e):
-        e.Skip()       
-        if e.Dragging() and self.entro:
-            self.SetPosition(e.GetPosition())
+        e.Skip()
+        #print (self.parent.ScreenToClient(wx.GetMousePosition()), e.GetPosition())  
         
+        if e.Dragging() and self.entro:
+            #print ('lalala', e.GetPosition()) 
+            self.Raise()
+            pos = e.GetPosition()
+            coordenadas = self.offset_coordenates(self.parent.ScreenToClient(wx.GetMousePosition()),self.calculate_coordenates())
+            #self.orientacion_movimiento(0, 0)
+            #pos_anterior = e.GetPosition()
+            #self.SetPosition(self.parent.ScreenToClient(wx.GetMousePosition()))
+            tup = (coordenadas[0] - 60 , coordenadas[1] - 20)
+            print ('antes final', tup)
+            #print('final', (coordenadas + self.parent.ScreenToClient(wx.GetMousePosition())))
+            self.SetPosition(tup)
+    
+    def calculate_coordenates(self):
+        panel_size = self.parent.GetSize()
+        centro = (panel_size[0] / 2, panel_size[1] / 2)
+        return centro
+        
+    def offset_coordenates(self, coordenadas, centro):
+        #coordenadas = coordenadas * (1, 1)
+        #print ('Coordenadas',coordenadas)
+        #coordenadas2 = (centro - self.GetPosition()) + coordenadas 
+        #print ('coor2', coordenadas2)
+        return coordenadas[0] , coordenadas[1]
+            
     def button_down(self, event):        
         self.entro = True
+        self.mouse_pos = event.GetPosition()
+        #print (self.mouse_pos)
         self.Refresh()
         
     def button_up(self, event):  
         self.entro = False
         self.Refresh()
+    
+    def set_focus(self, event):
+        self.mouse_pos = event.GetPosition()
+        print (self.mouse_pos)
            
-        
+    def orientacion_movimiento(self, pos_anterior, pos_posterior): 
+        mouse = wx.GetMouseState()
+        print (self.parent.ScreenToClient(wx.GetMousePosition()))
         
             
 "-------------------------------TEST------------------------------------------"

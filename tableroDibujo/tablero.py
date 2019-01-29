@@ -15,15 +15,13 @@ class Tablero(wx.Frame):
     def __init__(self, parent):
         wx.Frame.__init__(self,parent)
         self.SetBackgroundColour((50, 50, 50))
-        self.SetMinSize((1024, 800))
+        self.SetMinSize((800, 500))
         self.panel = wx.Panel(self)
         self.panel.SetSize(0, 0, 1024, 500,wx.EXPAND | wx.ALL)
         self.panel.SetBackgroundColour((50, 50, 50))
         #self.Show()
         self.SetDoubleBuffered(True)
         self.refrescado = False
-        
-        
         
         self.mdc = None
         self.crear_union_manager()
@@ -45,7 +43,7 @@ class Tablero(wx.Frame):
         self.boton1 = boton.Boton(self.panel, 'Login', 400, 400, 2)
         self.boton2 = boton.Boton(self.panel, 'Usuario', 250, 250, 3)
         self.boton3 = boton.Boton(self.panel, 'Rol', 400, 250, 4)
-        self.boton4 = boton.Boton(self.panel, 'Rol2', 450, 250, 5)
+        self.boton4 = boton.Boton(self.panel, 'Rol2', 560, 300, 5)
         
     def crear_union_manager(self):
         self.uniones = unionesModulo.Uniones()
@@ -79,7 +77,6 @@ class Tablero(wx.Frame):
         # do the actual drawing on the memory dc here
         self.refrescado = True
         dc = self.mdc
-        w, h = dc.GetSize()
         dc.SetBackground(wx.Brush((50, 50, 50)))
         dc.Clear()
         self.fondo.dibujar(dc)
