@@ -8,5 +8,7 @@
 <path>/${PROJECT_DIR_NAME}/Reglas</path>
 <path>/${PROJECT_DIR_NAME}/tableroDibujo</path>
 <path>/${PROJECT_DIR_NAME}/Uniones</path>
+<path>/${PROJECT_DIR_NAME}/ejecutable</path>
+<path>/${PROJECT_DIR_NAME}/ventanas</path>
 </pydev_pathproperty>
 </pydev_project>

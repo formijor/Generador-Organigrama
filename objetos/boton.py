@@ -9,21 +9,35 @@ import objetoModulo
 
 class Boton(wx.Button, objetoModulo.Objeto):
     '''Objeto del tipo boton'''
-    def __init__(self, parent, nombre, posX, posY, id_objeto):
+    def __init__(self, parent, nombre, posX, posY, id_objeto, drag):
         self.parent = parent
         wx.Button.__init__(self, parent= self.parent, id = -1, label= nombre, pos=(posX, posY), size= (120, 40))
         objetoModulo.Objeto.__init__(self, id_objeto, nombre)
         self.entro = False
         self.size = (120, 40)
         self.__crear_puertos()
-        self.Bind(wx.EVT_LEFT_DOWN, self.button_down)
-        self.Bind(wx.EVT_LEFT_UP, self.button_up)
-        #self.Bind(wx.EVT_ENTER_WINDOW, self.set_focus)
-        self.Bind(wx.EVT_MOUSE_EVENTS, self.mover)
-        self.parent.Bind(wx.EVT_MOUSE_EVENTS, self.mover)
+        self.default_bind()
+        self.set_draggable(drag)
+
+    def default_bind(self):
         self.Bind(wx.EVT_ERASE_BACKGROUND, self.onEraseBackground)
         self.Bind(wx.EVT_PAINT, self.OnPaint)
     
+    def set_draggable(self, drag):
+        if drag:
+            self.Bind(wx.EVT_LEFT_DOWN, self.button_down)
+            self.Bind(wx.EVT_LEFT_UP, self.button_up)
+            self.Bind(wx.EVT_MOUSE_EVENTS, self.mover)
+            self.parent.Bind(wx.EVT_MOUSE_EVENTS, self.mover)
+        else:
+            try:
+                self.Unbind(wx.EVT_LEFT_DOWN, self.button_down)
+                self.Unbind(wx.EVT_LEFT_UP, self.button_up)
+                self.Unbind(wx.EVT_MOUSE_EVENTS, self.mover)
+                self.parent.Unbind(wx.EVT_MOUSE_EVENTS, self.mover)
+            except:
+                print ('No seteado')
+            
     def onEraseBackground(self, event):
         pass
     
@@ -67,11 +81,8 @@ class Boton(wx.Button, objetoModulo.Objeto):
         wx.Button.Bind(self, *args, **kwargs)
         
     def mover(self, e):
-        e.Skip()
-        print ('ENTROEX')  
+        e.Skip()  
         if self.entro:
-            
-            #print ('lalala', e.GetPosition()) 
             self.Raise()
             pos = self.GetPosition() 
             coordenadas = self.offset_coordenates(self.parent.ScreenToClient(wx.GetMousePosition()),self.calculate_coordenates())

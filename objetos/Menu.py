@@ -7,33 +7,93 @@ import objetoModulo
 import wx
 
 
-class MenuPrincipal(objetoModulo.Objeto):
-    def __init__(self, parent, id_objeto, nombre):
+class Menu(objetoModulo.Objeto):
+    def __init__(self, parent, id_objeto, nombre, orientacion, min_size):
         objetoModulo.Objeto.__init__(self, id_objeto, nombre)
         self.parent = parent
         self.pos = []
-        self.set_tamanio([0,0,200,0])
-        self.calcular_coordenadas
-        
+        self.estado = True
+        self.set_orientacion(orientacion)
+        self.set_tamanio()
+        self.set_min_size(min_size)
+        #self.calcular_coordenadas
+    
+    def set_orientacion(self, orientacion):
+        self.orientacion = orientacion
+    
+    def get_orientacion(self):
+        return self.orientacion
+    
+    def set_min_size(self, min_size):
+        self.min_size = min_size
+     
     def set_posicion(self, pos):
         self.pos = pos
-        
-    def set_tamanio(self, coordenadas):
-        self.tamanio = (coordenadas)
     
-    def calcular_coordenadas(self):
+    def is_mouse_focus(self, coordenadas):
+        resultado = True
+        x1 = coordenadas[0] - self.tamanio[0]
+        x2 = self.min_size[0] + self.tamanio[0] - coordenadas[0]
+        y1 = coordenadas[1] - self.tamanio[1]
+        y2 = self.min_size[1] - coordenadas[1]
+        print ('focus', x1,x2,y1,y2)
+        print ('tamanio', self.tamanio)
+        for numero in [x1, x2, y1, y2]:
+            if numero < 0:
+                resultado = False
+                break
+        return resultado
+        
+    def set_tamanio(self):
+        x, y = self.parent.GetSize()
+        if self.orientacion == 'Vertical':
+            self.tamanio = ([0,0,120,y])
+        else:
+            self.tamanio = ([0,0,x,70])
+        
+    def get_tamanio(self):
+        return self.tamanio
+    
+    def calcular_coordenadas_2(self): #Separar menu en otro objeto con este comportamiento
         x,y = self.parent.GetSize()
         inicio = list(self.tamanio[0:2])
-        fin = [self.tamanio[2], y]
+        if self.orientacion == 'Vertical':            
+            fin = [self.tamanio[2], y]            
+        else:
+            fin = [x, self.tamanio[3]]
         self.tamanio = (inicio + fin )
-
+    
+    def calcular_coordenadas(self):
+        x, y = self.parent.GetSize()
+        if self.orientacion == 'Vertical':
+            center_y = y / 2
+            #inicio = self.min
+        else:
+            center_x = x / 2
+            inicio = ((center_x - (self.min_size[0] / 2)), 0)
+            fin = (self.min_size[0], self.min_size[1])
+        self.tamanio = (inicio + fin)  
+    
+    def mostrar(self):
+        self.estado = True
+    
+    def ocultar(self):
+        self.estado = False
+        #self.tamanio = (self.min_size[0] /2)
+    
     def dibujar(self, dc):
         self.calcular_coordenadas()
-        dc.SetPen(wx.Pen("GREY", 5))
-        dc.DrawRectangle(self.tamanio)
-        
-        
+        if self.estado == True:
+            #self.tamanio = (self.tamanio[0] * -1, 0, self.tamanio[2] * -1, self.tamanio[3] * -1)
+            dc.SetBrush(wx.Brush((253, 86, 51), wx.SOLID))
+     
+            dc.DrawRectangle(self.tamanio)
+            dc.SetPen(wx.Pen((150, 50, 20), 1))
+            #dc.DrawLine(self.parent.GetSize()[0]/2,0,self.parent.GetSize()[0]/2,self.parent.GetSize()[1])
 
+        
+        
+"---------------------------------------------------------------------------------------"
 class VentanaDibujo(wx.Frame):
     def __init__(self, parent):
         wx.Frame.__init__(self, parent)
@@ -46,7 +106,7 @@ class VentanaDibujo(wx.Frame):
         self.Show()
         
     def prueba(self):
-        self.menu = MenuPrincipal(self.panel, 1, 'Menu')
+        self.menu = Menu(self.panel, 1, 'Menu')
        
     def on_size(self, event):
         # re-create memory dc to fill window
