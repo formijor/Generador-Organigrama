@@ -85,9 +85,9 @@ class Tablero(wx.Frame):
         dc = self.mdc
         dc.SetBackground(wx.Brush((50, 50, 50)))
         dc.Clear()
-        self.fondo.dibujar(dc)
-        self.menu.dibujar(dc)
+        self.fondo.dibujar(dc)        
         self.uniones.actualizar_uniones(dc)
+        self.menu.dibujar(dc)
         self.panel.Refresh()
         
     def on_paint(self, event):

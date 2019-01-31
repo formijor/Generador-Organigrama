@@ -85,10 +85,10 @@ class Menu(objetoModulo.Objeto):
         self.calcular_coordenadas()
         if self.estado == True:
             #self.tamanio = (self.tamanio[0] * -1, 0, self.tamanio[2] * -1, self.tamanio[3] * -1)
-            dc.SetBrush(wx.Brush((253, 86, 51), wx.SOLID))
-     
-            dc.DrawRectangle(self.tamanio)
-            dc.SetPen(wx.Pen((150, 50, 20), 1))
+            dc.SetBrush(wx.Brush((210, 110, 60), wx.SOLID))
+            dc.SetPen(wx.Pen((210, 1100, 60), 1))
+            dc.DrawRoundedRectangle(self.tamanio, 30)
+            #dc.DrawRoundedRectangle(250,50, 300, 70, 28)
             #dc.DrawLine(self.parent.GetSize()[0]/2,0,self.parent.GetSize()[0]/2,self.parent.GetSize()[1])
 
         
