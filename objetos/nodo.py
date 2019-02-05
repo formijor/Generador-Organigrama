@@ -9,25 +9,38 @@ import time
 USE_BUFFERED_DC = True
 
 class Nodo(wx.Control):
-    def __init__(self, parent, id=wx.ID_ANY, label="", pos=wx.DefaultPosition,
+    def __init__(self, parent, id=wx.ID_ANY, label="BOTON", pos=wx.DefaultPosition,
                  size=wx.DefaultSize, style=wx.NO_BORDER, validator=wx.DefaultValidator,
                  name="Nodo"):
         wx.Control.__init__(self, parent, id, pos, size, style, validator, name)
         self.__init__variables()
         self.SetLabel(label)
         self.parent = parent
+        
         #self.SetInitialSize(size)
         self.default_binds()
+        self.default_configuration()
+        
+        
         self.Size = size
-        self.drag = False
+       
         #self.InheritAttributes()
 
     
     def __init__variables(self):
         self.__Focus = False
-    
-       
+        self.drag = False
+        self.hover_mouse = False
+        
+    def default_configuration(self):
+        self.SetCanFocus(True)
+        self.SetBackgroundColour((200,200,200))
+        self.SetHoverColour((80,175,30))
+        self.SetForegroundColour(wx.BLACK)
+           
     def default_binds(self):
+        self.Bind(wx.EVT_ENTER_WINDOW, self.OnHover)
+        self.Bind(wx.EVT_LEAVE_WINDOW, self.OnHover)
         self.Bind(wx.EVT_LEFT_DOWN, self.OnMouseClick)
         self.Bind(wx.EVT_LEFT_UP, self.OnMouseUnClick)
         self.Bind(wx.EVT_PAINT, self.OnPaint)
@@ -40,6 +53,14 @@ class Nodo(wx.Control):
         wx.Control.SetLabel(self, label)
         self.Refresh()
     
+    def SetFont(self, font):
+        output = wx.Control.SetFont(self, font)
+        self.Refresh()
+        return output
+    
+    def SetOwnFont(self, font):
+        return wx.Control.SetOwnFont(self, font)
+    
     def SetForegroundColour(self, colour):
         """ Overridden base class virtual. """
         wx.Control.SetForegroundColour(self, colour)
@@ -47,20 +68,60 @@ class Nodo(wx.Control):
     
     def SetBackgroundColour(self, colour):
         """ Overridden base class virtual. """
+        self.BackgroundColour = colour
         wx.Control.SetBackgroundColour(self, colour)
         self.Refresh()
+        
+    def GetBackgroundColour(self):
+        return wx.Control.GetBackgroundColour(self)
     
-    def Enable(self, enable=True):
-        """ Enables/Disables CustomCheckBox. """
+    def GetHoverColour(self):
+        return list(self.HoverColour)
+     
+    def SetHoverColour(self, colour):
+        self.HoverColour = colour
+        self.Refresh()
+        
+    def Enable(self, enable):
         wx.Control.Enable(self, enable)
         self.Refresh()
            
+    def Disable(self, disable):
+        wx.Control.Enable(self, disable)
+        self.Refresh()        
+    
+    def SetTransparent(self, alpha):
+        return wx.Control.SetTransparent(self, alpha)
+    
+    def SplitToRGB(self, colour):
+        return colour[0], colour[1], colour[2]
+    
+    def SplitArray(self, array):
+        return list(array)
+    
+    def ArrayRest(self, array1, array2):
+        pass
+    
+    def OnHover(self, event):
+        self.hover_mouse = not self.hover_mouse
+        backColour = self.GetBackgroundColour()
+        hoverColour = self.GetHoverColour()
+        if self.hover_mouse:
+            self.SetBackgroundColour(hoverColour)
+                        
+        else:
+            self.SetBackgroundColour(backColour) 
+        self.HoverColour = backColour
+        self.BackgroundColour = hoverColour
+
+    def SetCanFocus(self, canFocus):
+        wx.Control.SetCanFocus(self, canFocus)
+      
     def AcceptsFocus(self):
         return True
     
     def HasFocus(self):
-        """ Returns whether or not we have the focus. """
-        return self._hasFocus
+        return self._Focus
     
     def OnPaint(self, event):
         w, h = self.parent.GetClientSize()
@@ -77,20 +138,27 @@ class Nodo(wx.Control):
         #backBrush = wx.Brush(wx.RED, wx.SOLID)
         #dc.SetBackground(backBrush)
         dc.Clear()
+
         dc.SetBrush(wx.Brush(wx.GREEN, wx.SOLID))
-        dc.SetPen(wx.Pen((210, 1100, 60), 1))
-        dc.DrawRoundedRectangle(100, 100, 200, 70, 30)
-        
+        b = 10
+        dc.SetPen(wx.Pen(wx.BLACK, b))        
+        #dc.DrawRectangle(100 , 100 , 500, 70)
+        #dc.DrawLine(100, 100, 200, 70)
+        self.DrawText( dc)        
+    
+    def DrawText(self, dc):
+        lengt, height = dc.GetTextExtent(self.GetLabel())
+        l, h = self.GetSize()
+        Ldif = abs(l - lengt) / 2
+        Hdif = abs(h - height) / 2
+        dc.DrawText(self.GetLabel(), Ldif, Hdif )           
     
     def OnMouseClick(self, event):
-        """ Handles the wx.EVT_LEFT_DOWN event for CustomCheckBox. """
-        print ('click')
         self.drag = True
         #if not self.IsEnabled():
             # Nothing to do, we are disabled
             #return
-        
-        
+
     def OnMouseUnClick(self, event):
         self.drag = False
     
