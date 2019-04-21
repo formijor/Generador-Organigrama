@@ -18,6 +18,7 @@ class Boton(wx.Button, objetoModulo.Objeto):
         self.__crear_puertos()
         self.default_bind()
         self.set_draggable(drag)
+        self.orientacion = Orientacion(self.GetPosition())
 
     def default_bind(self):
         self.Bind(wx.EVT_ERASE_BACKGROUND, self.onEraseBackground)
@@ -76,6 +77,9 @@ class Boton(wx.Button, objetoModulo.Objeto):
             return self.coordenadas_puertos
         elif not relativo:
             return puertos
+        
+    def get_puerto_conectar(self, objeto_pos):
+        return self.orientacion.get_posicion_relativa(objeto_pos)
               
     def Bind(self, *args, **kwargs):
         wx.Button.Bind(self, *args, **kwargs)
@@ -90,11 +94,8 @@ class Boton(wx.Button, objetoModulo.Objeto):
             #pos_anterior = e.GetPosition()
             #self.SetPosition(self.parent.ScreenToClient(wx.GetMousePosition()))
             tup = (coordenadas[0] - 60 , coordenadas[1] - 20)
-            print ('antes final', tup)
             diferencia =  ((tup[0] - pos[0]) / 5, (tup[1] - pos[1]) / 5)
-            print ('diferencia', diferencia )
             tup = (tup[0] - diferencia[0], tup[1] - diferencia[1])
-            print('AAA', tup)
             self.SetPosition(tup)
     
     def calculate_coordenates(self):
@@ -122,8 +123,59 @@ class Boton(wx.Button, objetoModulo.Objeto):
     def orientacion_movimiento(self, pos_anterior, pos_posterior): 
         mouse = wx.GetMouseState()
         print (self.parent.ScreenToClient(wx.GetMousePosition()))
-        
+
+
+
+"--------------------------------------------------ORIENTACION------------------"       
+class Orientacion():
+    def __init__(self, posicion):
+        self.pos_x = posicion[0]
+        self.pos_y = posicion[1]
+    
+    def get_posicion_relativa(self, objeto_pos):
+        binario = 0b10000
+        dif_x = (self.posicion[0] - objeto_pos[0]) * -1
+        dif_y = (self.posicion[1] - objeto_pos[1]) * -1
+        binario + self.norte(dif_x, dif_y)
+        binario + self.este(objeto_pos[0], objeto_pos[1])
+        binario + self.sur(objeto_pos[0], objeto_pos[1])
+        binario + self.oeste(objeto_pos[0], objeto_pos[1])
+        return self.posicion_relativa(binario)
+    
+    def posicion_relativa(self, binario):
+        if binario == 0b11000:
+            return 1
+        elif binario == 0b10100:
+            return 2
+        elif binario == 0b10010:
+            return 3
+        elif binario == 0b10001:
+            return 4
             
+    def norte(self, pos_y):
+        if pos_y <= self.pos_y:
+            return 0b1000
+        else:
+            return 0b0000
+    
+    def este(self, pos_x):
+        if pos_x >= self.pos_x:
+            return 0b100
+        else:
+            return 0b000
+    
+    def sur(self, pos_y):
+        if pos_y >= self.pos_y:
+            return 0b10
+        else:
+            return 0b00
+    
+    def oeste(self, pos_x):
+        if pos_x <= self.pos_x:
+            return 0b1
+        else:
+            return 0b0
+      
 "-------------------------------TEST------------------------------------------"
 class VentanaDibujo(wx.Frame):
     def __init__(self, parent):

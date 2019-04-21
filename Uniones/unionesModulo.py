@@ -93,11 +93,13 @@ class Conexion(Union):
             seccion = 2        
         
         if seccion == 4 or seccion == 1:
-            diferencia = size1[1] / 2
+            #diferencia = size1[1] / 2
+            diferencia = (x1 - x2) / 2
             puerto1 = 'abajo'
             puerto2 = 'arriba'
         elif seccion == 3 or seccion == 2:
-            diferencia = -(size1[1] / 2)
+            diferencia = -((x1 - x2) / 2)
+            #diferencia = -(size1[1] / 2)
             puerto1 = 'arriba'
             puerto2 = 'abajo'
         
