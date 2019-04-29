@@ -137,7 +137,6 @@ class Union():
         
         "El numero a multiplicar determina separacion entre norte y este y oeste etc"
         if pos_y < rango_especial * 2: 
-            print (rango_especial, ' RANGO ESPECIAL 1')
             diferencia = 0
             if seccion == 4 or seccion == 3:
                 puerto1 = 'derecha'
@@ -149,15 +148,12 @@ class Union():
         
         "Determina si esta mas cerca un objeto de otro en el eje Y"    
         if pos_y < rango_especial * 0.5:
-            print ('RANGO ESPECIAL 2', rango_especial)
             diferencia = 0
             if seccion == 4 or seccion == 3:
                 puerto2 = 'izquierda'
             elif seccion == 1 or seccion == 2:
                 #diferencia = 10
                 puerto2 = 'derecha'
-             
-            
         return puerto1, puerto2, diferencia       
     
     def seleccionar_puertos2(self):
@@ -182,7 +178,6 @@ class Union():
         return self.__determinar_orientacion(resultado, especial, eje_x, eje_y), (especial*100) + resultado
         
     def __determinar_orientacion(self, resultado, especial, eje_x, eje_y):
-        print ( especial)
         if resultado in (17, 13, 10):
             orientacion = ['abajo', 'arriba']
         elif resultado in (57,53,50):
@@ -210,22 +205,14 @@ class Union():
     def __determinar_posicion_este_oeste(self, x1, x2):
         if x1 < x2:
             return 7
-        #elif x1 > x2:
-        #    return 3
         else:
             return 3
-        #else:
-        #    return 0
         
     def __determinar_posicion_norte_sur(self, y1, y2):
         if y1 < y2:
             return 1
         else:
-            return 5
-        #elif y1 > y2:
-        #    return 5
-        #else:
-        #    return 0      
+            return 5     
         
     def __calcular_curvas(self, resultado, coordenadas):
         dif_x = (coordenadas[0][0] - coordenadas[1][0]) / 2
@@ -249,7 +236,6 @@ class Union():
               
         return curva1, curva2
         
-        
         """Se separaran la orientacion espacial de un objeto en
             1: norte
             2: noreste
@@ -260,13 +246,7 @@ class Union():
             7: oeste
             8: noroeste
             """
-    
-        
-        
-        
-        
-        
-     
+            
     def dibujar(self, dc):
         dc.SetPen(wx.Pen("GREEN", 3)) 
         #print (self.lista_puntos)       
