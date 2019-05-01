@@ -25,6 +25,12 @@ class Objeto(object):
     def get_conexiones_puertos(self):
         return self.conexiones_puertos
             
+    def cambio_posicion(self, pos_anterior):
+        if pos_anterior != self.GetPosition():
+            return True
+        else:
+            return False
+            
     def get_puertos(self):
         return self.puertos #{'arriba' : self.__arriba, 'abajo': self.__abajo,
                 #'izquierda': self.__izquierda, 'derecha': self.__derecha}

@@ -6,22 +6,31 @@ Created on 28 abr. 2019
 
 import wx
 import objetoModulo
+import boton
 
 class MenuLateral(objetoModulo.Objeto):
-    def __init__(self, parent, id_objeto, nombre, orientacion, min_size):
+    def __init__(self, parent, frame, id_objeto, nombre, orientacion, min_size):
         objetoModulo.Objeto.__init__(self, id_objeto, nombre)
         self.parent = parent
+        self.frame = frame
         self.pos = []
         self.estado = True
         self.set_orientacion(orientacion)
         self.set_min_size(min_size)
         self.set_tamanio()
         self.lista_objetos = []
-        
-    def agregar_objeto(self, objeto):
+        self.agregar_objeto_menu(boton.Boton(self.parent, self, 'Agregar Nodo', 400, 400, 2, False, False))
+    
+    def agregar_objeto_menu(self, objeto):
+        objeto.Bind(wx.EVT_BUTTON, self.agregar_objeto_tablero )
         self.lista_objetos.append(objeto)
         self.calcular_separacion()
-        
+
+    def agregar_objeto_tablero(self, event):
+        boton1 = boton.Boton(self.parent, self.frame, 'Login', 400, 400, 4, True, True)
+        #boton1.Hide()
+        self.frame.agregar_objeto(boton1)
+
     def calcular_separacion(self):
         self.separacion = 20
         x = 0
@@ -29,29 +38,29 @@ class MenuLateral(objetoModulo.Objeto):
         for objeto in self.lista_objetos:
             objeto.SetPosition((x, y))
             y = y + objeto.get_size()[1] + self.separacion
-        
+
     def set_orientacion(self, orientacion):
         self.orientacion = orientacion
-    
+
     def get_orientacion(self):
         return self.orientacion
-    
+
     def set_min_size(self, min_size):
         self.min_size = min_size
-     
+
     def set_posicion(self, pos):
         self.pos = pos
-    
+
     def is_mouse_focus(self, coordenadas):
         return True
-        
+  
     def set_tamanio(self):
         x, y = self.parent.GetSize()
         self.tamanio = ([0,0,self.min_size[0], y])
-        
+
     def get_tamanio(self):
         return self.tamanio
-    
+
     def calcular_coordenadas(self):
         x, y = self.parent.GetSize()
         self.tamanio = (0, 0, self.min_size[0], y ) 

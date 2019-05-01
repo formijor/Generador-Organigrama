@@ -18,13 +18,16 @@ class Cuadricula(Fondo):
         Fondo.__init__(self, parent)
         self.parent = parent
     
+    def set_pos(self):
+        pass
+    
     def dibujar(self, dc):
         dc.SetPen(wx.Pen("Black", 1))
         separacion = self.parent.GetSize()[0] / (self.parent.GetSize()[0] / 32)
         #separacion = 50
-        x1 = 0 #+ separacion
+        x1 = 10 #+ separacion
         y1 = 0 #+ separacion
-        x2 = 0 #+ separacion
+        x2 = 10#+ separacion
         y2 = 0 #+ separacion
         ancho, alto = (self.parent.GetSize())
         cantidad_lineas_ancho = ancho / separacion

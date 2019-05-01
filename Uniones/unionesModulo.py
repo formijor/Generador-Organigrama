@@ -12,30 +12,45 @@ class Uniones():
     def __init__(self):
         self.lista_uniones = {}
     
-    def crear_union(self, conexion): 
+    def crear_union(self, parent, tipo_conexion, objeto1, objeto2): 
         #if     Agregar una forma de seleccionar tipo de conexion, o pasarle la conexion ya creada (MEJOR)?
-        self.lista_uniones[conexion.get_id()] = conexion
+        union = Union(parent, tipo_conexion, objeto1, objeto2)
+        self.lista_uniones[union.get_id()] = union
     
     def actualizar_uniones(self, dc):
         for conexion in self.lista_uniones.values():
             conexion.actualizar_union()
             conexion.dibujar(dc)
         
+    def get_union(self, id_union):
+        return self.lista_uniones[id_union]
+    
+    def get_union_objetos(self, id_union):
+        return self.lista_uniones[id_union].get_objetos()
+    
+    def eliminar_union(self, id_union):
+        self.lista_uniones.pop(id_union)
+        
+        
 class Union():
     def __init__(self, parent, tipo, objeto1, objeto2):
         self.parent = parent
+        self.tipo = tipo
         self.objeto1 = objeto1
         self.objeto2 = objeto2
         self.objeto1_pos = ()
         self.objeto2_pos = ()
         self.generar_id()
         self.lista_puntos = []
-        self.tipo = tipo
+        
         #self.pos_anterior_objeto1 = ''
         #self.pos_anterior_objeto2 = ''
     
     def generar_id(self):
-        self.id_union = (self.objeto1.get_id_objeto(), self.objeto2.get_id_objeto())
+        if self.tipo == 'cursor':
+            self.id_union = 'cursor'
+        else:
+            self.id_union = (self.objeto1.get_id_objeto(), self.objeto2.get_id_objeto())
     
     def get_id(self):
         return self.id_union
@@ -57,8 +72,8 @@ class Union():
             return True
         else:
             return False
-    
-    def crear_conexion_old(self):
+
+    """def crear_conexion_old(self):
         #self.objeto1_pos, self.objeto2_pos = self.get_posicion_objetos()
         objeto1, objeto2 = self.get_objetos()
         self.actualizar_nueva_posicion()
@@ -69,7 +84,7 @@ class Union():
         curva1 = (boton1_pos[0], boton1_pos[1] + diferencia)
         curva2 = (boton2_pos[0], curva1[1])
         self.lista_puntos = [boton1_pos, curva1], [curva1, curva2], [curva2, boton2_pos]
-    
+    """
     def crear_conexion(self):
         self.actualizar_nueva_posicion()
         objeto1_puerto, objeto2_puerto= self.seleccionar_puertos2()
@@ -80,7 +95,7 @@ class Union():
         self.objeto1_pos = self.objeto1.GetPosition()
         self.objeto2_pos = self.objeto2.GetPosition()
     
-    def actualizar_union_old(self):
+    """def actualizar_union_old(self):
         #self.get_posicion_objetos()
         if self.cambios_posicion():
             puerto1, puerto2, diferencia = self.seleccionar_puertos2()
@@ -89,11 +104,11 @@ class Union():
             curva1 = (boton1_pos[0], boton1_pos[1] + diferencia)
             curva2 = (boton2_pos[0], curva1[1] )
             self.lista_puntos = [boton1_pos, curva1], [curva1, curva2], [curva2, boton2_pos]
-    
+    """
     def actualizar_union(self):
         if self.cambios_posicion():
             self.actualizar_nueva_posicion()
-            objeto1_puerto, objeto2_puerto, resultado= self.seleccionar_puertos2()
+            objeto1_puerto, objeto2_puerto, resultado= self.seleccionar_puertos()
             coordenadas = self.get_coordenadas_puertos(objeto1_puerto, objeto2_puerto)
             curva1, curva2 = self.__calcular_curvas(resultado, coordenadas)
             
@@ -104,7 +119,7 @@ class Union():
         boton2_coordenadas = self.objeto2.get_coordenadas_puerto(puerto2)
         return boton1_coordenadas, boton2_coordenadas
     
-    def seleccionar_puertos(self):
+    """def seleccionar_puertos(self):
         (x1, y1), (x2, y2) = self.get_posicion_objetos()
         size1, size2 = self.get_size_objetos()       
         rango_especial = size1[1] * 2
@@ -155,8 +170,8 @@ class Union():
                 #diferencia = 10
                 puerto2 = 'derecha'
         return puerto1, puerto2, diferencia       
-    
-    def seleccionar_puertos2(self):
+    """  
+    def seleccionar_puertos(self):
         (x1, y1), (x2, y2) = self.get_posicion_objetos()
         size1, size2 = self.get_size_objetos()
         ancho_max_y = self.__determinar_ancho_max_eje_y(size1[1])

@@ -16,8 +16,10 @@ import menuLateral
 class Tablero(wx.Panel):
     def __init__(self, parent, pos):
         wx.Panel.__init__(self, parent)
+        self.parent = parent
         self.SetPosition(pos)
-        self.SetSize(0, 0, 1024, 500)
+        self.SetSize(500, 500)
+        self.SetMinSize((500,500))
         self.SetBackgroundColour((50, 50, 50))
         #self.panel_menu = wx.Panel(self)
         self.Show()
@@ -37,7 +39,6 @@ class Tablero(wx.Panel):
         
     def crear_fondo(self):
         self.fondo = FondoModulo.Cuadricula(self)
-
     
     def crear_objeto(self):
         #self.menu = menuLateral.MenuLateral(self, 1, 'Menu', 'Horizontal', (120, 250))
@@ -46,7 +47,7 @@ class Tablero(wx.Panel):
         self.boton3 = boton.Boton(self, 'Rol1', 400, 250, 4, True)
         #self.boton4 = boton.Boton(self.panel, 'Rol2', 560, 300, 5, True)
     
-    def determinar_posicion(self, event):
+    """def determinar_posicion(self, event):
         event.Skip()
         focus = self.menu.is_mouse_focus(event.GetPosition())
         if focus:
@@ -56,7 +57,7 @@ class Tablero(wx.Panel):
             self.on_size(None)
         else:
             #self.menu.ocultar()
-            self.on_size(None)
+            self.on_size(None)"""
         
     def crear_union_manager(self):
         self.uniones = unionesModulo.Uniones()
@@ -74,14 +75,15 @@ class Tablero(wx.Panel):
      
     def on_size(self, event):
         # re-create memory dc to fill window
-        w, h = self.GetClientSize()
-        #w, h = self.GetSize()
-        self.SetSize(0, 0, w, h)
+        #w, h = self.GetClientSize()
+        w, h = self.parent.GetSize()
+        self.SetSize(150, 0, w, h)
         #self.menu.SetSize(0,0,120,h)
         self.mdc = wx.MemoryDC(wx.Bitmap(w, h))
         self.redraw()
        
     def redraw(self):
+        self.SetFocus()
         # do the actual drawing on the memory dc here
         self.refrescado = True
         dc = self.mdc
@@ -89,11 +91,11 @@ class Tablero(wx.Panel):
         dc.Clear()
         self.fondo.dibujar(dc)        
         self.uniones.actualizar_uniones(dc)
-        #self.menu.dibujar(dc)
         self.Refresh()
         
     def on_paint(self, event):
         # just blit the memory dc
+        print ('pintando tablero')
         dc = wx.BufferedPaintDC(self)
         if not self.mdc:
             return
